@@ -1,13 +1,15 @@
 """
 Data loading and preprocessing for Flower client
+Loads data from CSV files in output directory
 """
 import pandas as pd
 import numpy as np
 import torch
 from torch.utils.data import Dataset, DataLoader
-from sqlalchemy import create_engine
 import os
 from typing import Tuple
+from pathlib import Path
+from datetime import datetime
 
 
 class PatientDataset(Dataset):
@@ -25,60 +27,132 @@ class PatientDataset(Dataset):
 
 
 class DataLoaderClient:
-    """Data loader for Flower client"""
+    """Data loader for Flower client - loads from CSV files"""
     
-    def __init__(self, institution_id: int, database_url: str):
-        self.institution_id = institution_id
-        self.database_url = database_url
-        self.engine = create_engine(database_url)
+    def __init__(self, client_id: int, data_dir: str = "output", 
+                 start_idx: int = None, end_idx: int = None):
+        """
+        Initialize data loader
+        
+        Args:
+            client_id: Client ID (1, 2, or 3)
+            data_dir: Directory containing CSV files
+            start_idx: Start index for data split (if None, auto-calculate)
+            end_idx: End index for data split (if None, auto-calculate)
+        """
+        self.client_id = client_id
+        self.data_dir = Path(data_dir)
+        
+        # Calculate data split for this client
+        # Each client gets approximately 1/3 of the data
+        if start_idx is None or end_idx is None:
+            # Load patients to determine total count
+            patients_df = pd.read_csv(self.data_dir / 'patients.csv')
+            total_samples = len(patients_df)
+            samples_per_client = total_samples // 3
+            
+            self.start_idx = (client_id - 1) * samples_per_client
+            if client_id == 3:
+                self.end_idx = total_samples  # Last client gets remaining data
+            else:
+                self.end_idx = client_id * samples_per_client
+        else:
+            self.start_idx = start_idx
+            self.end_idx = end_idx
     
     def load_data(self) -> pd.DataFrame:
-        """Load patient data from database"""
-        query = f"""
-        SELECT age, sex, bmi, children, smoker, region, insurance_cost
-        FROM patients
-        WHERE institution_id = {self.institution_id}
-        AND insurance_cost IS NOT NULL
-        """
-        df = pd.read_sql(query, self.engine)
+        """Load and merge patient data from CSV files"""
+        # Load all CSV files
+        patients_df = pd.read_csv(self.data_dir / 'patients.csv')
+        physical_df = pd.read_csv(self.data_dir / 'patient_physical_measurements.csv')
+        lifestyle_df = pd.read_csv(self.data_dir / 'patient_lifestyle.csv')
+        socioeconomic_df = pd.read_csv(self.data_dir / 'patient_socioeconomic.csv')
+        lab_results_df = pd.read_csv(self.data_dir / 'patient_lab_results.csv')
+        
+        # Merge all dataframes on patient_id
+        # First, add patient_id to patients_df (it's the index + 1)
+        patients_df = patients_df.copy()
+        patients_df['patient_id'] = patients_df.index + 1
+        
+        # Merge all tables
+        df = patients_df.merge(physical_df, on='patient_id', how='left')
+        df = df.merge(lifestyle_df, on='patient_id', how='left', suffixes=('', '_lifestyle'))
+        df = df.merge(socioeconomic_df, on='patient_id', how='left', suffixes=('', '_socio'))
+        df = df.merge(lab_results_df, on='patient_id', how='left', suffixes=('', '_lab'))
+        
+        # Filter by client's data range (based on patient_id)
+        df = df[(df['patient_id'] > self.start_idx) & (df['patient_id'] <= self.end_idx)].copy()
+        
+        # Calculate age from date_of_birth
+        df['date_of_birth'] = pd.to_datetime(df['date_of_birth'])
+        df['age'] = (datetime.now() - df['date_of_birth']).dt.days / 365.25
+        
+        # Filter out rows with missing insurance_cost
+        df = df[df['insurance_cost'].notna()].copy()
+        
         return df
     
     def preprocess_features(self, df: pd.DataFrame) -> Tuple[np.ndarray, np.ndarray]:
-        """Preprocess features and targets"""
+        """Preprocess features and targets using enriched data"""
         # Encode categorical features
         df['sex_encoded'] = df['sex'].map({'male': 1.0, 'female': 0.0})
-        df['smoker_encoded'] = df['smoker'].map({'yes': 1.0, 'no': 0.0})
+        
+        # Smoking status from lifestyle
+        df['smoker_encoded'] = df['smoking_status'].map({'current': 1.0, 'never': 0.0, 'former': 0.5})
+        df['smoker_encoded'] = df['smoker_encoded'].fillna(0.0)
         
         # One-hot encode region
         region_dummies = pd.get_dummies(df['region'], prefix='region')
         df = pd.concat([df, region_dummies], axis=1)
         
-        # Fill missing BMI with mean
-        if df['bmi'].isna().any():
-            df['bmi'].fillna(df['bmi'].mean(), inplace=True)
+        # Fill missing values with median
+        numeric_cols = ['age', 'bmi', 'number_of_dependents', 'height_cm', 'weight_kg',
+                       'systolic_bp', 'diastolic_bp', 'resting_heart_rate',
+                       'total_cholesterol', 'glucose', 'hba1c']
+        for col in numeric_cols:
+            if col in df.columns:
+                df[col] = df[col].fillna(df[col].median())
         
         # Normalize features
-        df['age_norm'] = df['age'] / 100.0
-        df['bmi_norm'] = df['bmi'] / 50.0
-        df['children_norm'] = df['children'] / 10.0
+        df['age_norm'] = (df['age'] - 18) / (64 - 18)  # Normalize to 0-1
+        df['bmi_norm'] = (df['bmi'] - 15) / (50 - 15)  # Normalize to 0-1
+        df['children_norm'] = df['number_of_dependents'] / 5.0  # Max 5 children
+        df['height_norm'] = (df['height_cm'] - 140) / (210 - 140) if 'height_cm' in df.columns else 0.5
+        df['weight_norm'] = (df['weight_kg'] - 40) / (200 - 40) if 'weight_kg' in df.columns else 0.5
+        df['bp_systolic_norm'] = (df['systolic_bp'] - 90) / (180 - 90) if 'systolic_bp' in df.columns else 0.5
+        df['bp_diastolic_norm'] = (df['diastolic_bp'] - 60) / (120 - 60) if 'diastolic_bp' in df.columns else 0.5
+        df['heart_rate_norm'] = (df['resting_heart_rate'] - 50) / (100 - 50) if 'resting_heart_rate' in df.columns else 0.5
+        df['cholesterol_norm'] = (df['total_cholesterol'] - 100) / (300 - 100) if 'total_cholesterol' in df.columns else 0.5
+        df['glucose_norm'] = (df['glucose'] - 70) / (120 - 70) if 'glucose' in df.columns else 0.5
         
-        # Select features
+        # Activity level encoding
+        activity_map = {'sedentary': 0.0, 'light': 0.25, 'moderate': 0.5, 'active': 0.75, 'very_active': 1.0}
+        df['activity_encoded'] = df['physical_activity_level'].map(activity_map).fillna(0.5)
+        
+        # Select features - using enriched data
         feature_cols = [
-            'age_norm', 'sex_encoded', 'bmi_norm', 'children_norm', 'smoker_encoded'
+            'age_norm', 'sex_encoded', 'bmi_norm', 'children_norm', 'smoker_encoded',
+            'height_norm', 'weight_norm', 'bp_systolic_norm', 'bp_diastolic_norm',
+            'heart_rate_norm', 'cholesterol_norm', 'glucose_norm', 'activity_encoded'
         ] + [col for col in df.columns if col.startswith('region_')]
         
-        # Ensure we have exactly 9 features (pad if needed)
-        features = df[feature_cols].values
-        if features.shape[1] < 9:
-            # Pad with zeros
-            padding = np.zeros((features.shape[0], 9 - features.shape[1]))
-            features = np.hstack([features, padding])
-        elif features.shape[1] > 9:
-            # Take first 9 features
-            features = features[:, :9]
+        # Ensure we have exactly the right number of features
+        # Count region columns
+        region_cols = [col for col in df.columns if col.startswith('region_')]
+        expected_features = 13 + len(region_cols)  # Base features + regions
         
-        # Normalize targets (insurance_cost)
-        targets = df['insurance_cost'].values / 10000.0  # Normalize to 0-1 range
+        # Build feature matrix
+        features_list = []
+        for col in feature_cols:
+            if col in df.columns:
+                features_list.append(df[col].values)
+            else:
+                features_list.append(np.zeros(len(df)))
+        
+        features = np.column_stack(features_list)
+        
+        # Normalize targets (insurance_cost) - keep original scale for better training
+        targets = df['insurance_cost'].values
         
         return features, targets
     

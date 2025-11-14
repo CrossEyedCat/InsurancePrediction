@@ -13,10 +13,10 @@ from model import InsuranceCostModel, get_model_parameters, set_model_parameters
 SERVER_ADDRESS = os.getenv("SERVER_ADDRESS", "0.0.0.0")
 SERVER_PORT = int(os.getenv("SERVER_PORT", "8080"))
 NUM_ROUNDS = int(os.getenv("NUM_ROUNDS", "10"))
-MIN_CLIENTS = int(os.getenv("MIN_CLIENTS", "2"))
-FRACTION_FIT = float(os.getenv("FRACTION_FIT", "0.5"))
-FRACTION_EVALUATE = float(os.getenv("FRACTION_EVALUATE", "0.5"))
-MIN_AVAILABLE_CLIENTS = int(os.getenv("MIN_AVAILABLE_CLIENTS", "2"))
+MIN_CLIENTS = int(os.getenv("MIN_CLIENTS", "3"))  # Need 3 clients
+FRACTION_FIT = float(os.getenv("FRACTION_FIT", "1.0"))  # Use all clients
+FRACTION_EVALUATE = float(os.getenv("FRACTION_EVALUATE", "1.0"))  # Use all clients
+MIN_AVAILABLE_CLIENTS = int(os.getenv("MIN_AVAILABLE_CLIENTS", "3"))  # Wait for 3 clients
 
 MODEL_DIR = Path("./models")
 MODEL_DIR.mkdir(exist_ok=True)
@@ -24,7 +24,8 @@ MODEL_DIR.mkdir(exist_ok=True)
 
 def get_initial_parameters():
     """Get initial model parameters"""
-    model = InsuranceCostModel()
+    # Use 17 features: 13 base + 4 regions
+    model = InsuranceCostModel(input_size=17)
     return get_model_parameters(model)
 
 
@@ -56,7 +57,8 @@ class SaveModelStrategy(FedAvg):
         
         if aggregated_parameters is not None:
             # Save aggregated model
-            model = InsuranceCostModel()
+            # Determine input size (17 features: 13 base + 4 regions)
+            model = InsuranceCostModel(input_size=17)
             set_model_parameters(model, aggregated_parameters)
             
             # Save model checkpoint
@@ -88,7 +90,7 @@ def main():
         fraction_evaluate=FRACTION_EVALUATE,
         min_fit_clients=MIN_CLIENTS,
         min_evaluate_clients=MIN_CLIENTS,
-        min_available_clients=MIN_AVAILABLE_CLIENTS,
+        min_available_clients=max(MIN_CLIENTS, MIN_AVAILABLE_CLIENTS),  # Ensure >= min_fit_clients
         initial_parameters=fl.common.ndarrays_to_parameters(get_initial_parameters()),
         on_fit_config_fn=fit_config,
         on_evaluate_config_fn=evaluate_config,

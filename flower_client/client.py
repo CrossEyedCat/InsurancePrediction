@@ -22,22 +22,25 @@ class FlowerClient(fl.client.NumPyClient):
     
     def __init__(
         self,
-        institution_id: int,
-        database_url: str,
+        client_id: int,
+        data_dir: str = "output",
         local_epochs: int = 5,
         batch_size: int = 32,
         learning_rate: float = 0.001
     ):
-        self.institution_id = institution_id
+        self.client_id = client_id
         self.local_epochs = local_epochs
         self.batch_size = batch_size
         self.learning_rate = learning_rate
         
-        # Initialize data loader
-        self.data_loader = DataLoaderClient(institution_id, database_url)
+        # Initialize data loader (loads from CSV)
+        self.data_loader = DataLoaderClient(client_id, data_dir)
         
-        # Initialize model
-        self.model = InsuranceCostModel()
+        # Determine input size from data
+        self._determine_input_size()
+        
+        # Initialize model with correct input size
+        self.model = InsuranceCostModel(input_size=self.input_size)
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.model.to(self.device)
         
@@ -50,17 +53,26 @@ class FlowerClient(fl.client.NumPyClient):
         self.val_loader = None
         self._load_data()
     
+    def _determine_input_size(self):
+        """Determine input size from data"""
+        df = self.data_loader.load_data()
+        features, _ = self.data_loader.preprocess_features(df)
+        self.input_size = features.shape[1]
+    
     def _load_data(self):
         """Load training and validation data"""
         try:
             self.train_loader, self.val_loader = self.data_loader.get_data_loaders(
                 batch_size=self.batch_size
             )
-            print(f"Institution {self.institution_id}: Loaded data successfully")
+            print(f"Client {self.client_id}: Loaded data successfully")
             print(f"  Train batches: {len(self.train_loader)}")
             print(f"  Val batches: {len(self.val_loader)}")
+            print(f"  Input features: {self.input_size}")
         except Exception as e:
-            print(f"Error loading data for institution {self.institution_id}: {e}")
+            print(f"Error loading data for client {self.client_id}: {e}")
+            import traceback
+            traceback.print_exc()
             raise
     
     def get_parameters(self, config: Dict):
@@ -115,7 +127,7 @@ class FlowerClient(fl.client.NumPyClient):
         # Calculate average loss
         avg_loss = total_loss / (self.local_epochs * len(self.train_loader))
         
-        print(f"Institution {self.institution_id}: Training completed")
+        print(f"Client {self.client_id}: Training completed")
         print(f"  Average loss: {avg_loss:.4f}")
         print(f"  Samples: {num_samples}")
         
@@ -145,8 +157,9 @@ class FlowerClient(fl.client.NumPyClient):
         avg_loss = total_loss / len(self.val_loader)
         mse = avg_loss
         
-        print(f"Institution {self.institution_id}: Evaluation completed")
+        print(f"Client {self.client_id}: Evaluation completed")
         print(f"  MSE: {mse:.4f}")
+        print(f"  RMSE: {mse**0.5:.2f}")
         print(f"  Samples: {num_samples}")
         
         return float(avg_loss), num_samples, {"mse": mse}
@@ -157,24 +170,23 @@ def main():
     import argparse
     
     parser = argparse.ArgumentParser(description="Flower Client")
-    parser.add_argument("--institution-id", type=int, required=True, help="Institution ID")
+    parser.add_argument("--client-id", type=int, required=True, help="Client ID (1, 2, or 3)")
     parser.add_argument("--server-address", type=str, default=os.getenv("FLOWER_SERVER_URL", "localhost:8080").replace("http://", ""), help="Flower server address")
+    parser.add_argument("--data-dir", type=str, default="output", help="Directory containing CSV files")
     args = parser.parse_args()
     
-    institution_id = args.institution_id
+    client_id = args.client_id
     server_address = args.server_address
+    data_dir = args.data_dir
     
     # Get configuration from environment
-    database_url = os.getenv(
-        "DATABASE_URL",
-        "postgresql://medical_user:medical_pass@localhost:5432/medical_insurance"
-    )
     local_epochs = int(os.getenv("LOCAL_EPOCHS", "5"))
     batch_size = int(os.getenv("BATCH_SIZE", "32"))
     learning_rate = float(os.getenv("LEARNING_RATE", "0.001"))
     
-    print(f"Starting Flower client for institution {institution_id}")
+    print(f"Starting Flower client {client_id}")
     print(f"Server address: {server_address}")
+    print(f"Data directory: {data_dir}")
     print(f"Configuration:")
     print(f"  - Local epochs: {local_epochs}")
     print(f"  - Batch size: {batch_size}")
@@ -182,14 +194,17 @@ def main():
     
     # Create client
     client = FlowerClient(
-        institution_id=institution_id,
-        database_url=database_url,
+        client_id=client_id,
+        data_dir=data_dir,
         local_epochs=local_epochs,
         batch_size=batch_size,
         learning_rate=learning_rate
     )
     
-    # Start client
+    # Start client - use NumPyClient API directly
+    # The deprecation warnings are just notices - the API still works perfectly
+    # We'll use start_numpy_client which is stable and works with Flower 1.23.0
+    print(f"Connecting to server at {server_address}...")
     fl.client.start_numpy_client(
         server_address=server_address,
         client=client
