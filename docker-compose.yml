@@ -1,0 +1,120 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: ${DB_USER:-medical_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-medical_pass}
+      POSTGRES_DB: ${DB_NAME:-medical_insurance}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-medical_user}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # FastAPI Backend
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql://${DB_USER:-medical_user}:${DB_PASSWORD:-medical_pass}@db:5432/${DB_NAME:-medical_insurance}
+      SECRET_KEY: ${SECRET_KEY:-your-secret-key-change-in-production}
+      ALGORITHM: HS256
+      ACCESS_TOKEN_EXPIRE_MINUTES: 30
+      FLOWER_SERVER_URL: http://flower-server:8080
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+      - model_storage:/app/models
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  # Flower Aggregation Server
+  flower-server:
+    build:
+      context: ./flower_server
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      SERVER_ADDRESS: 0.0.0.0
+      SERVER_PORT: 8080
+      NUM_ROUNDS: 10
+      MIN_CLIENTS: 2
+      FRACTION_FIT: 0.5
+    volumes:
+      - ./flower_server:/app
+      - model_storage:/app/models
+    command: python server.py
+
+  # Flower Client 1 (Institution 1)
+  flower-client-1:
+    build:
+      context: ./flower_client
+      dockerfile: Dockerfile
+    environment:
+      CLIENT_ID: 1
+      INSTITUTION_ID: 1
+      DATABASE_URL: postgresql://${DB_USER:-medical_user}:${DB_PASSWORD:-medical_pass}@db:5432/${DB_NAME:-medical_insurance}
+      FLOWER_SERVER_URL: http://flower-server:8080
+      LOCAL_EPOCHS: 5
+      BATCH_SIZE: 32
+      LEARNING_RATE: 0.001
+    depends_on:
+      - db
+      - flower-server
+    volumes:
+      - ./flower_client:/app
+    command: python client.py --institution-id 1
+
+  # Flower Client 2 (Institution 2)
+  flower-client-2:
+    build:
+      context: ./flower_client
+      dockerfile: Dockerfile
+    environment:
+      CLIENT_ID: 2
+      INSTITUTION_ID: 2
+      DATABASE_URL: postgresql://${DB_USER:-medical_user}:${DB_PASSWORD:-medical_pass}@db:5432/${DB_NAME:-medical_insurance}
+      FLOWER_SERVER_URL: http://flower-server:8080
+      LOCAL_EPOCHS: 5
+      BATCH_SIZE: 32
+      LEARNING_RATE: 0.001
+    depends_on:
+      - db
+      - flower-server
+    volumes:
+      - ./flower_client:/app
+    command: python client.py --institution-id 2
+
+  # React Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      REACT_APP_API_URL: http://localhost:8000
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    command: npm start
+
+volumes:
+  postgres_data:
+  model_storage:
+
