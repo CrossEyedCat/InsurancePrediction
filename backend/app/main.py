@@ -6,6 +6,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api import auth, patients, predictions, model
 from app.database import engine, Base
 
+
+
 # Create database tables
 Base.metadata.create_all(bind=engine)
 
@@ -14,6 +16,8 @@ app = FastAPI(
     description="API for federated learning medical insurance cost prediction",
     version="1.0.0"
 )
+
+app.include_router(api_router, prefix="/api")
 
 # CORS middleware
 app.add_middleware(
