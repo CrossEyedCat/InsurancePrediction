@@ -1,0 +1,579 @@
+{
+  "history": [
+    {
+      "round": 1,
+      "started_at": "2025-11-15T08:02:32.455671",
+      "num_clients": 0,
+      "status": "completed",
+      "completed_at": "2025-11-15T08:03:11.057785",
+      "duration_seconds": 38.602114,
+      "aggregated_metrics": {}
+    },
+    {
+      "round": 1,
+      "started_at": "2025-11-15T08:25:35.335264",
+      "num_clients": 0,
+      "status": "completed",
+      "completed_at": "2025-11-15T08:25:47.667685",
+      "duration_seconds": 12.332421,
+      "aggregated_metrics": {}
+    },
+    {
+      "round": 1,
+      "started_at": "2025-11-15T08:27:02.943058",
+      "num_clients": 0,
+      "status": "completed",
+      "completed_at": "2025-11-15T08:27:14.752039",
+      "duration_seconds": 11.808981,
+      "aggregated_metrics": {}
+    },
+    {
+      "round": 1,
+      "started_at": "2025-11-15T08:28:45.467968",
+      "num_clients": 0,
+      "status": "completed",
+      "client_metrics": [
+        {
+          "round": 1,
+          "client_id": 3,
+          "num_samples": 13334,
+          "metrics": {
+            "client_id": 3,
+            "loss": 233951317.94340527
+          },
+          "timestamp": "2025-11-15T08:29:06.893968",
+          "eval_metrics": {
+            "mse": 133855000.6095238,
+            "client_id": 3
+          },
+          "eval_samples": 3334
+        },
+        {
+          "round": 1,
+          "client_id": 1,
+          "num_samples": 13332,
+          "metrics": {
+            "client_id": 1,
+            "loss": 237992719.56834534
+          },
+          "timestamp": "2025-11-15T08:29:06.893985",
+          "eval_metrics": {
+            "mse": 130069351.54285714,
+            "client_id": 1
+          },
+          "eval_samples": 3334
+        },
+        {
+          "round": 1,
+          "client_id": 2,
+          "num_samples": 13332,
+          "metrics": {
+            "client_id": 2,
+            "loss": 242870153.18944845
+          },
+          "timestamp": "2025-11-15T08:29:06.893991",
+          "eval_metrics": {
+            "mse": 132804616.53333333,
+            "client_id": 2
+          },
+          "eval_samples": 3334
+        }
+      ],
+      "completed_at": "2025-11-15T08:29:06.910713",
+      "duration_seconds": 21.442745,
+      "aggregated_metrics": {}
+    },
+    {
+      "round": 2,
+      "started_at": "2025-11-15T08:29:07.025280",
+      "num_clients": 3,
+      "status": "completed",
+      "client_metrics": [
+        {
+          "round": 2,
+          "client_id": 2,
+          "num_samples": 13332,
+          "metrics": {
+            "client_id": 2,
+            "loss": 123998062.34628297
+          },
+          "timestamp": "2025-11-15T08:29:16.082841",
+          "eval_metrics": {
+            "mse": 120073210.66666667,
+            "client_id": 2
+          },
+          "eval_samples": 3334
+        },
+        {
+          "round": 2,
+          "client_id": 1,
+          "num_samples": 13332,
+          "metrics": {
+            "client_id": 1,
+            "loss": 123044681.00143886
+          },
+          "timestamp": "2025-11-15T08:29:16.082853",
+          "eval_metrics": {
+            "mse": 116722095.27619047,
+            "client_id": 1
+          },
+          "eval_samples": 3334
+        },
+        {
+          "round": 2,
+          "client_id": 3,
+          "num_samples": 13334,
+          "metrics": {
+            "client_id": 3,
+            "loss": 122595143.75827338
+          },
+          "timestamp": "2025-11-15T08:29:16.082857",
+          "eval_metrics": {
+            "mse": 120981876.57142857,
+            "client_id": 3
+          },
+          "eval_samples": 3334
+        }
+      ],
+      "completed_at": "2025-11-15T08:29:16.096220",
+      "duration_seconds": 9.07094,
+      "aggregated_metrics": {}
+    },
+    {
+      "round": 3,
+      "started_at": "2025-11-15T08:29:16.205495",
+      "num_clients": 3,
+      "status": "completed",
+      "client_metrics": [
+        {
+          "round": 3,
+          "client_id": 3,
+          "num_samples": 13334,
+          "metrics": {
+            "client_id": 3,
+            "loss": 121339969.12422062
+          },
+          "timestamp": "2025-11-15T08:29:25.291141",
+          "eval_metrics": {
+            "mse": 121182874.74285714,
+            "client_id": 3
+          },
+          "eval_samples": 3334
+        },
+        {
+          "round": 3,
+          "client_id": 2,
+          "num_samples": 13332,
+          "metrics": {
+            "client_id": 2,
+            "loss": 122903124.59664269
+          },
+          "timestamp": "2025-11-15T08:29:25.291152",
+          "eval_metrics": {
+            "mse": 120434092.11428571,
+            "client_id": 2
+          },
+          "eval_samples": 3334
+        },
+        {
+          "round": 3,
+          "client_id": 1,
+          "num_samples": 13332,
+          "metrics": {
+            "client_id": 1,
+            "loss": 122067789.28729017
+          },
+          "timestamp": "2025-11-15T08:29:25.291156",
+          "eval_metrics": {
+            "mse": 116749610.43809524,
+            "client_id": 1
+          },
+          "eval_samples": 3334
+        }
+      ],
+      "completed_at": "2025-11-15T08:29:25.304210",
+      "duration_seconds": 9.098715,
+      "aggregated_metrics": {}
+    },
+    {
+      "round": 4,
+      "started_at": "2025-11-15T08:29:25.409967",
+      "num_clients": 3,
+      "status": "completed",
+      "client_metrics": [
+        {
+          "round": 4,
+          "client_id": 1,
+          "num_samples": 13332,
+          "metrics": {
+            "client_id": 1,
+            "loss": 121651649.93381295
+          },
+          "timestamp": "2025-11-15T08:29:34.446767",
+          "eval_metrics": {
+            "mse": 116639532.57142857,
+            "client_id": 1
+          },
+          "eval_samples": 3334
+        },
+        {
+          "round": 4,
+          "client_id": 3,
+          "num_samples": 13334,
+          "metrics": {
+            "client_id": 3,
+            "loss": 121074700.78465228
+          },
+          "timestamp": "2025-11-15T08:29:34.446778",
+          "eval_metrics": {
+            "mse": 120954863.08571428,
+            "client_id": 3
+          },
+          "eval_samples": 3334
+        },
+        {
+          "round": 4,
+          "client_id": 2,
+          "num_samples": 13332,
+          "metrics": {
+            "client_id": 2,
+            "loss": 122525708.20719424
+          },
+          "timestamp": "2025-11-15T08:29:34.446782",
+          "eval_metrics": {
+            "mse": 120405162.66666667,
+            "client_id": 2
+          },
+          "eval_samples": 3334
+        }
+      ],
+      "completed_at": "2025-11-15T08:29:34.460416",
+      "duration_seconds": 9.050449,
+      "aggregated_metrics": {}
+    },
+    {
+      "round": 5,
+      "started_at": "2025-11-15T08:29:34.566981",
+      "num_clients": 3,
+      "status": "completed",
+      "client_metrics": [
+        {
+          "round": 5,
+          "client_id": 1,
+          "num_samples": 13332,
+          "metrics": {
+            "client_id": 1,
+            "loss": 121244908.24940048
+          },
+          "timestamp": "2025-11-15T08:29:43.700186",
+          "eval_metrics": {
+            "mse": 116716032.26666667,
+            "client_id": 1
+          },
+          "eval_samples": 3334
+        },
+        {
+          "round": 5,
+          "client_id": 2,
+          "num_samples": 13332,
+          "metrics": {
+            "client_id": 2,
+            "loss": 122420944.25323741
+          },
+          "timestamp": "2025-11-15T08:29:43.700197",
+          "eval_metrics": {
+            "mse": 120710015.46666667,
+            "client_id": 2
+          },
+          "eval_samples": 3334
+        },
+        {
+          "round": 5,
+          "client_id": 3,
+          "num_samples": 13334,
+          "metrics": {
+            "client_id": 3,
+            "loss": 120945545.31606714
+          },
+          "timestamp": "2025-11-15T08:29:43.700201",
+          "eval_metrics": {
+            "mse": 120952263.54285714,
+            "client_id": 3
+          },
+          "eval_samples": 3334
+        }
+      ],
+      "completed_at": "2025-11-15T08:29:43.713304",
+      "duration_seconds": 9.146323,
+      "aggregated_metrics": {}
+    },
+    {
+      "round": 6,
+      "started_at": "2025-11-15T08:29:43.820645",
+      "num_clients": 3,
+      "status": "completed",
+      "client_metrics": [
+        {
+          "round": 6,
+          "client_id": 3,
+          "num_samples": 13334,
+          "metrics": {
+            "client_id": 3,
+            "loss": 120928160.0057554
+          },
+          "timestamp": "2025-11-15T08:29:52.583012",
+          "eval_metrics": {
+            "mse": 121212322.59047619,
+            "client_id": 3
+          },
+          "eval_samples": 3334
+        },
+        {
+          "round": 6,
+          "client_id": 1,
+          "num_samples": 13332,
+          "metrics": {
+            "client_id": 1,
+            "loss": 121184718.72613908
+          },
+          "timestamp": "2025-11-15T08:29:52.583025",
+          "eval_metrics": {
+            "mse": 116811597.94285715,
+            "client_id": 1
+          },
+          "eval_samples": 3334
+        },
+        {
+          "round": 6,
+          "client_id": 2,
+          "num_samples": 13332,
+          "metrics": {
+            "client_id": 2,
+            "loss": 122005125.75731415
+          },
+          "timestamp": "2025-11-15T08:29:52.583028",
+          "eval_metrics": {
+            "mse": 120803552.91428572,
+            "client_id": 2
+          },
+          "eval_samples": 3334
+        }
+      ],
+      "completed_at": "2025-11-15T08:29:52.596753",
+      "duration_seconds": 8.776108,
+      "aggregated_metrics": {}
+    },
+    {
+      "round": 7,
+      "started_at": "2025-11-15T08:29:52.694607",
+      "num_clients": 3,
+      "status": "completed",
+      "client_metrics": [
+        {
+          "round": 7,
+          "client_id": 1,
+          "num_samples": 13332,
+          "metrics": {
+            "client_id": 1,
+            "loss": 120920096.53908873
+          },
+          "timestamp": "2025-11-15T08:30:01.132525",
+          "eval_metrics": {
+            "mse": 116903060.8,
+            "client_id": 1
+          },
+          "eval_samples": 3334
+        },
+        {
+          "round": 7,
+          "client_id": 2,
+          "num_samples": 13332,
+          "metrics": {
+            "client_id": 2,
+            "loss": 121595859.9501199
+          },
+          "timestamp": "2025-11-15T08:30:01.132537",
+          "eval_metrics": {
+            "mse": 120856797.71428572,
+            "client_id": 2
+          },
+          "eval_samples": 3334
+        },
+        {
+          "round": 7,
+          "client_id": 3,
+          "num_samples": 13334,
+          "metrics": {
+            "client_id": 3,
+            "loss": 120687645.54628298
+          },
+          "timestamp": "2025-11-15T08:30:01.132540",
+          "eval_metrics": {
+            "mse": 121256143.27619047,
+            "client_id": 3
+          },
+          "eval_samples": 3334
+        }
+      ],
+      "completed_at": "2025-11-15T08:30:01.145731",
+      "duration_seconds": 8.451124,
+      "aggregated_metrics": {}
+    },
+    {
+      "round": 8,
+      "started_at": "2025-11-15T08:30:01.242970",
+      "num_clients": 3,
+      "status": "completed",
+      "client_metrics": [
+        {
+          "round": 8,
+          "client_id": 1,
+          "num_samples": 13332,
+          "metrics": {
+            "client_id": 1,
+            "loss": 120811298.91798562
+          },
+          "timestamp": "2025-11-15T08:30:09.613679",
+          "eval_metrics": {
+            "mse": 116759506.8952381,
+            "client_id": 1
+          },
+          "eval_samples": 3334
+        },
+        {
+          "round": 8,
+          "client_id": 3,
+          "num_samples": 13334,
+          "metrics": {
+            "client_id": 3,
+            "loss": 120233614.8028777
+          },
+          "timestamp": "2025-11-15T08:30:09.613690",
+          "eval_metrics": {
+            "mse": 121174003.54285714,
+            "client_id": 3
+          },
+          "eval_samples": 3334
+        },
+        {
+          "round": 8,
+          "client_id": 2,
+          "num_samples": 13332,
+          "metrics": {
+            "client_id": 2,
+            "loss": 121728995.82541966
+          },
+          "timestamp": "2025-11-15T08:30:09.613694",
+          "eval_metrics": {
+            "mse": 120862730.13333334,
+            "client_id": 2
+          },
+          "eval_samples": 3334
+        }
+      ],
+      "completed_at": "2025-11-15T08:30:09.627245",
+      "duration_seconds": 8.384275,
+      "aggregated_metrics": {}
+    },
+    {
+      "round": 9,
+      "started_at": "2025-11-15T08:30:09.724955",
+      "num_clients": 3,
+      "status": "completed",
+      "client_metrics": [
+        {
+          "round": 9,
+          "client_id": 2,
+          "num_samples": 13332,
+          "metrics": {
+            "client_id": 2,
+            "loss": 121510455.3496403
+          },
+          "timestamp": "2025-11-15T08:30:18.095646",
+          "eval_metrics": {
+            "mse": 121308244.15238096,
+            "client_id": 2
+          },
+          "eval_samples": 3334
+        },
+        {
+          "round": 9,
+          "client_id": 1,
+          "num_samples": 13332,
+          "metrics": {
+            "client_id": 1,
+            "loss": 120877851.53189449
+          },
+          "timestamp": "2025-11-15T08:30:18.095658",
+          "eval_metrics": {
+            "mse": 116957095.92380953,
+            "client_id": 1
+          },
+          "eval_samples": 3334
+        },
+        {
+          "round": 9,
+          "client_id": 3,
+          "num_samples": 13334,
+          "metrics": {
+            "client_id": 3,
+            "loss": 120137906.78561151
+          },
+          "timestamp": "2025-11-15T08:30:18.095661",
+          "eval_metrics": {
+            "mse": 121260506.43809524,
+            "client_id": 3
+          },
+          "eval_samples": 3334
+        }
+      ],
+      "completed_at": "2025-11-15T08:30:18.108474",
+      "duration_seconds": 8.383519,
+      "aggregated_metrics": {}
+    },
+    {
+      "round": 10,
+      "started_at": "2025-11-15T08:30:18.206420",
+      "num_clients": 3,
+      "status": "completed",
+      "client_metrics": [
+        {
+          "round": 10,
+          "client_id": 3,
+          "num_samples": 13334,
+          "metrics": {
+            "client_id": 3,
+            "loss": 120224569.88393286
+          },
+          "timestamp": "2025-11-15T08:30:26.561680"
+        },
+        {
+          "round": 10,
+          "client_id": 2,
+          "num_samples": 13332,
+          "metrics": {
+            "client_id": 2,
+            "loss": 121848528.39520384
+          },
+          "timestamp": "2025-11-15T08:30:26.561692"
+        },
+        {
+          "round": 10,
+          "client_id": 1,
+          "num_samples": 13332,
+          "metrics": {
+            "client_id": 1,
+            "loss": 120429068.85371703
+          },
+          "timestamp": "2025-11-15T08:30:26.561695"
+        }
+      ],
+      "completed_at": "2025-11-15T08:30:26.575476",
+      "duration_seconds": 8.369056,
+      "aggregated_metrics": {}
+    }
+  ],
+  "total_rounds": 10,
+  "total_clients": 3,
+  "last_updated": "2025-11-15T08:30:26.575840"
+}

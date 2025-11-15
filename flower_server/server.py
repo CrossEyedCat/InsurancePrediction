@@ -7,10 +7,13 @@ from flwr.server import ServerConfig
 import torch
 import os
 from pathlib import Path
+from datetime import datetime
 from model import InsuranceCostModel, get_model_parameters, set_model_parameters
+from monitoring import get_monitor
 
 # Configuration
-SERVER_ADDRESS = os.getenv("SERVER_ADDRESS", "0.0.0.0")
+# Use localhost instead of 0.0.0.0 on Windows to avoid binding issues
+SERVER_ADDRESS = os.getenv("SERVER_ADDRESS", "127.0.0.1")
 SERVER_PORT = int(os.getenv("SERVER_PORT", "8080"))
 NUM_ROUNDS = int(os.getenv("NUM_ROUNDS", "10"))
 MIN_CLIENTS = int(os.getenv("MIN_CLIENTS", "3"))  # Need 3 clients
@@ -48,8 +51,25 @@ def evaluate_config(server_round: int):
 class SaveModelStrategy(FedAvg):
     """Custom strategy that saves model after aggregation"""
     
+    def configure_fit(self, server_round, parameters, client_manager):
+        """Configure fit for clients"""
+        monitor = get_monitor()
+        num_clients = len(client_manager.all().values())
+        monitor.start_round(server_round, num_clients)
+        return super().configure_fit(server_round, parameters, client_manager)
+    
     def aggregate_fit(self, server_round, results, failures):
         """Aggregate model weights and save model"""
+        monitor = get_monitor()
+        
+        # Record client metrics
+        for result in results:
+            if result[1].metrics:
+                client_id = result[1].metrics.get("client_id", 0)
+                num_samples = result[1].num_examples
+                metrics = result[1].metrics
+                monitor.record_fit_metrics(server_round, client_id, metrics, num_samples)
+        
         # Call parent aggregation
         aggregated_parameters, aggregated_metrics = super().aggregate_fit(
             server_round, results, failures
@@ -72,7 +92,24 @@ class SaveModelStrategy(FedAvg):
             print(f"Model saved: {model_path}")
             print(f"Active model updated: {active_model_path}")
         
+        # Record completion
+        monitor.complete_round(server_round, aggregated_metrics)
+        
         return aggregated_parameters, aggregated_metrics
+    
+    def aggregate_evaluate(self, server_round, results, failures):
+        """Aggregate evaluation results"""
+        monitor = get_monitor()
+        
+        # Record client evaluation metrics
+        for result in results:
+            if result[1].metrics:
+                client_id = result[1].metrics.get("client_id", 0)
+                num_samples = result[1].num_examples
+                metrics = result[1].metrics
+                monitor.record_eval_metrics(server_round, client_id, metrics, num_samples)
+        
+        return super().aggregate_evaluate(server_round, results, failures)
 
 
 def main():

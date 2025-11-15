@@ -1,0 +1,198 @@
+{
+  "client_id": 2,
+  "history": [
+    {
+      "round": 1,
+      "type": "training",
+      "loss": 242870153.18944845,
+      "num_samples": 13332,
+      "local_epochs": 5,
+      "duration_seconds": 9.21013855934143,
+      "timestamp": "2025-11-15T08:29:06.888846"
+    },
+    {
+      "round": 1,
+      "type": "evaluation",
+      "loss": 132804616.53333333,
+      "mse": 132804616.53333333,
+      "rmse": 11524.088533733735,
+      "num_samples": 3334,
+      "duration_seconds": 0.10369467735290527,
+      "timestamp": "2025-11-15T08:29:07.020906"
+    },
+    {
+      "round": 2,
+      "type": "training",
+      "loss": 123998062.34628297,
+      "num_samples": 13332,
+      "local_epochs": 5,
+      "duration_seconds": 9.048237323760986,
+      "timestamp": "2025-11-15T08:29:16.078449"
+    },
+    {
+      "round": 2,
+      "type": "evaluation",
+      "loss": 120073210.66666667,
+      "mse": 120073210.66666667,
+      "rmse": 10957.792235056599,
+      "num_samples": 3334,
+      "duration_seconds": 0.09979653358459473,
+      "timestamp": "2025-11-15T08:29:16.202319"
+    },
+    {
+      "round": 3,
+      "type": "training",
+      "loss": 122903124.59664269,
+      "num_samples": 13332,
+      "local_epochs": 5,
+      "duration_seconds": 9.06262469291687,
+      "timestamp": "2025-11-15T08:29:25.272501"
+    },
+    {
+      "round": 3,
+      "type": "evaluation",
+      "loss": 120434092.11428571,
+      "mse": 120434092.11428571,
+      "rmse": 10974.246767513738,
+      "num_samples": 3334,
+      "duration_seconds": 0.0964195728302002,
+      "timestamp": "2025-11-15T08:29:25.406417"
+    },
+    {
+      "round": 4,
+      "type": "training",
+      "loss": 122525708.20719424,
+      "num_samples": 13332,
+      "local_epochs": 5,
+      "duration_seconds": 9.027623414993286,
+      "timestamp": "2025-11-15T08:29:34.441911"
+    },
+    {
+      "round": 4,
+      "type": "evaluation",
+      "loss": 120405162.66666667,
+      "mse": 120405162.66666667,
+      "rmse": 10972.928627611986,
+      "num_samples": 3334,
+      "duration_seconds": 0.09698128700256348,
+      "timestamp": "2025-11-15T08:29:34.563742"
+    },
+    {
+      "round": 5,
+      "type": "training",
+      "loss": 122420944.25323741,
+      "num_samples": 13332,
+      "local_epochs": 5,
+      "duration_seconds": 9.122548341751099,
+      "timestamp": "2025-11-15T08:29:43.695280"
+    },
+    {
+      "round": 5,
+      "type": "evaluation",
+      "loss": 120710015.46666667,
+      "mse": 120710015.46666667,
+      "rmse": 10986.810978016627,
+      "num_samples": 3334,
+      "duration_seconds": 0.09751081466674805,
+      "timestamp": "2025-11-15T08:29:43.818106"
+    },
+    {
+      "round": 6,
+      "type": "training",
+      "loss": 122005125.75731415,
+      "num_samples": 13332,
+      "local_epochs": 5,
+      "duration_seconds": 8.750225305557251,
+      "timestamp": "2025-11-15T08:29:52.576733"
+    },
+    {
+      "round": 6,
+      "type": "evaluation",
+      "loss": 120803552.91428572,
+      "mse": 120803552.91428572,
+      "rmse": 10991.066959776277,
+      "num_samples": 3334,
+      "duration_seconds": 0.08850383758544922,
+      "timestamp": "2025-11-15T08:29:52.691288"
+    },
+    {
+      "round": 7,
+      "type": "training",
+      "loss": 121595859.9501199,
+      "num_samples": 13332,
+      "local_epochs": 5,
+      "duration_seconds": 8.42761754989624,
+      "timestamp": "2025-11-15T08:30:01.126492"
+    },
+    {
+      "round": 7,
+      "type": "evaluation",
+      "loss": 120856797.71428572,
+      "mse": 120856797.71428572,
+      "rmse": 10993.488878162643,
+      "num_samples": 3334,
+      "duration_seconds": 0.0873720645904541,
+      "timestamp": "2025-11-15T08:30:01.239507"
+    },
+    {
+      "round": 8,
+      "type": "training",
+      "loss": 121728995.82541966,
+      "num_samples": 13332,
+      "local_epochs": 5,
+      "duration_seconds": 8.359514951705933,
+      "timestamp": "2025-11-15T08:30:09.607317"
+    },
+    {
+      "round": 8,
+      "type": "evaluation",
+      "loss": 120862730.13333334,
+      "mse": 120862730.13333334,
+      "rmse": 10993.75868997193,
+      "num_samples": 3334,
+      "duration_seconds": 0.0873565673828125,
+      "timestamp": "2025-11-15T08:30:09.721358"
+    },
+    {
+      "round": 9,
+      "type": "training",
+      "loss": 121510455.3496403,
+      "num_samples": 13332,
+      "local_epochs": 5,
+      "duration_seconds": 8.359042882919312,
+      "timestamp": "2025-11-15T08:30:18.089290"
+    },
+    {
+      "round": 9,
+      "type": "evaluation",
+      "loss": 121308244.15238096,
+      "mse": 121308244.15238096,
+      "rmse": 11014.002185962237,
+      "num_samples": 3334,
+      "duration_seconds": 0.08789229393005371,
+      "timestamp": "2025-11-15T08:30:18.203561"
+    },
+    {
+      "round": 10,
+      "type": "training",
+      "loss": 121848528.39520384,
+      "num_samples": 13332,
+      "local_epochs": 5,
+      "duration_seconds": 8.344693422317505,
+      "timestamp": "2025-11-15T08:30:26.555443"
+    },
+    {
+      "round": 10,
+      "type": "evaluation",
+      "loss": 121231317.18095239,
+      "mse": 121231317.18095239,
+      "rmse": 11010.509396978525,
+      "num_samples": 3334,
+      "duration_seconds": 0.09358787536621094,
+      "timestamp": "2025-11-15T08:30:26.676295"
+    }
+  ],
+  "total_trainings": 10,
+  "total_evaluations": 10,
+  "last_updated": "2025-11-15T08:30:26.676785"
+}
